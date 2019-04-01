@@ -17,6 +17,8 @@ import org.apache.solr.client.solrj.impl.ConcurrentUpdateSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.params.CommonParams;
+import org.apache.solr.common.params.HighlightParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +40,8 @@ public class SolrSearchIndex implements SearchIndex {
     private final SolrClient solrUpdateClient;
     private final SolrClient solrQueryClient;
     private static final Logger LOG = LoggerFactory.getLogger(SolrSearchIndex.class);
+    private static final String DEFAULT_SEARCH_FIELD = "searchfield";
+    private static final String ENTITY_FIELD = "entity";
 
     public SolrSearchIndex(String urlString) {
         this(new ConcurrentUpdateSolrClient.Builder(urlString).build(), new HttpSolrClient.Builder(urlString).build());
@@ -64,8 +68,8 @@ public class SolrSearchIndex implements SearchIndex {
                 JsonToFlattenedDocument converter = new JsonToFlattenedDocument(key.namespace(), key.entity(), key.id(),
                         key.timestamp(), jsonDocument.jackson(), Integer.MAX_VALUE);
                 addFields(converter.toDocument(), doc);
-                final String idString = getIdString(jsonDocument.key());
-                doc.addField("id", idString);
+                doc.addField(CommonParams.ID, getIdString(jsonDocument.key()));
+                doc.addField(ENTITY_FIELD, jsonDocument.key().entity());
                 updateDocs.add(doc);
             }
             this.solrUpdateClient.add(updateDocs, 5000);
@@ -95,7 +99,10 @@ public class SolrSearchIndex implements SearchIndex {
         try {
             SolrQuery query = new SolrQuery().setStart(Long.valueOf(from).intValue())
                     .setRows(Long.valueOf(size).intValue());
-            query.set("q", "searchfield:" + text);
+            query.set(CommonParams.Q, text);
+            query.set(CommonParams.DF, DEFAULT_SEARCH_FIELD);
+            query.setHighlight(true);
+            query.set(HighlightParams.FIELDS, "*languageText");
             LOG.info("Executing query: " + query.toString());
             SolrDocumentList response = this.solrQueryClient.query(query).getResults();
             LOG.info("Number of hits: " + response.getNumFound());
@@ -113,7 +120,8 @@ public class SolrSearchIndex implements SearchIndex {
     private void addFields(FlattenedDocument node, SolrInputDocument doc) {
         for (Map.Entry<String, FlattenedDocumentLeafNode> entry : node.leafNodesByPath().entrySet()) {
             if (entry.getValue().type() == FragmentType.STRING && entry.getKey().contains("languageText")) {
-                doc.addField("searchfield", entry.getValue().value());
+                doc.addField(entry.getKey(), entry.getValue().value());
+                doc.addField(DEFAULT_SEARCH_FIELD, entry.getValue().value());
             }
         }
     }

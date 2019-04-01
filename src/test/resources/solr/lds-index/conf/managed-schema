@@ -436,9 +436,12 @@
       <tokenizer class="solr.WhitespaceTokenizerFactory"/>
     </analyzer>
   </fieldType>
+  <field name="_.description_0_.languageText" type="text_general"/>
+  <field name="_.name_0_.languageText" type="text_general"/>
   <field name="_root_" type="string" docValues="false" indexed="true" stored="false"/>
   <field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
   <field name="_version_" type="plong" indexed="false" stored="false"/>
+  <field name="entity" type="text_general"/>
   <field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
   <field name="searchfield" type="text_general"/>
   <dynamicField name="*_txt_en_split_tight" type="text_en_splitting_tight" indexed="true" stored="true"/>
@@ -509,4 +512,7 @@
   <dynamicField name="*_d" type="pdouble" indexed="true" stored="true"/>
   <dynamicField name="*_p" type="location" indexed="true" stored="true"/>
   <copyField source="searchfield" dest="searchfield_str" maxChars="256"/>
+  <copyField source="_.description_0_.languageText" dest="_.description_0_.languageText_str" maxChars="256"/>
+  <copyField source="_.name_0_.languageText" dest="_.name_0_.languageText_str" maxChars="256"/>
+  <copyField source="entity" dest="entity_str" maxChars="256"/>
 </schema>
