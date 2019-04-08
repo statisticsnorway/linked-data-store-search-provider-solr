@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 
 import static org.testng.Assert.*;
 
@@ -55,14 +56,14 @@ public class SolrSearchIndexTest {
         searchIndex.createOrOverwrite(jsonDocument).blockingAwait();
         server.commit();
 
-        SearchResponse response = searchIndex.search("Norway", 0, 10).blockingGet();
+        SearchResponse response = searchIndex.search("Norway", Arrays.asList("UnitDataSet"), 0, 10).blockingGet();
         assertEquals(response.getTotalHits(), 1);
         assertEquals(response.getResults().iterator().next().getDocumentKey().entity(), "UnitDataSet");
         assertEquals(response.getResults().iterator().next().getDocumentKey().id(), "b9c10b86-5867-4270-b56e-ee7439fe381e");
 
         searchIndex.delete(jsonDocument).blockingAwait();
         server.commit();
-        response = searchIndex.search("Norway", 0, 10).blockingGet();
+        response = searchIndex.search("Norway", null, 0, 10).blockingGet();
         assertEquals(response.getTotalHits(), 0);
     }
 

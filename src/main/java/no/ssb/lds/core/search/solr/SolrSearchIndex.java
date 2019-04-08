@@ -95,11 +95,11 @@ public class SolrSearchIndex implements SearchIndex {
     }
 
     @Override
-    public Single<SearchResponse> search(String text, long from, long size) {
+    public Single<SearchResponse> search(String text, List<String> typeFilters, long from, long size) {
         try {
             SolrQuery query = new SolrQuery().setStart(Long.valueOf(from).intValue())
                     .setRows(Long.valueOf(size).intValue());
-            query.set(CommonParams.Q, text);
+            query.set(CommonParams.Q, text + createFilters(typeFilters));
             query.set(CommonParams.DF, DEFAULT_SEARCH_FIELD);
             query.setHighlight(true);
             query.set(HighlightParams.FIELDS, "*languageText");
@@ -113,6 +113,14 @@ public class SolrSearchIndex implements SearchIndex {
         } catch (Exception e) {
             LOG.error("An error ocurred", e);
             throw new RuntimeException(e);
+        }
+    }
+
+    private String createFilters(List<String> typeFilters) {
+        if (typeFilters != null && !typeFilters.isEmpty()) {
+            return " AND (" + typeFilters.stream().map(name -> "entity:" + name).collect(Collectors.joining(" OR ")) + ")";
+        } else {
+            return "";
         }
     }
 
