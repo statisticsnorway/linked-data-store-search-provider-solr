@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -95,7 +96,7 @@ public class SolrSearchIndex implements SearchIndex {
     }
 
     @Override
-    public Single<SearchResponse> search(String text, List<String> typeFilters, long from, long size) {
+    public Single<SearchResponse> search(String text, Set<String> typeFilters, long from, long size) {
         try {
             SolrQuery query = new SolrQuery().setStart(Long.valueOf(from).intValue())
                     .setRows(Long.valueOf(size).intValue());
@@ -116,7 +117,7 @@ public class SolrSearchIndex implements SearchIndex {
         }
     }
 
-    private String createFilters(List<String> typeFilters) {
+    private String createFilters(Set<String> typeFilters) {
         if (typeFilters != null && !typeFilters.isEmpty()) {
             return " AND (" + typeFilters.stream().map(name -> "entity:" + name).collect(Collectors.joining(" OR ")) + ")";
         } else {
