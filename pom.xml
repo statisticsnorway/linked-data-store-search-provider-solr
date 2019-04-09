@@ -4,7 +4,7 @@
 
     <groupId>no.ssb.lds</groupId>
     <artifactId>linked-data-store-search-provider-solr</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>LinkedDataStore Solr search-provider</name>
@@ -37,7 +37,7 @@
         <connection>scm:git:git://github.com/statisticsnorway/linked-data-store-search-provider-solr.git</connection>
         <developerConnection>scm:git:git@github.com:statisticsnorway/linked-data-store-search-provider-solr.git</developerConnection>
         <url>https://github.com/statisticsnorway/linked-data-store-search-provider-solr/tree/master</url>
-        <tag>HEAD</tag>
+        <tag>v0.2</tag>
     </scm>
 
     <distributionManagement>
