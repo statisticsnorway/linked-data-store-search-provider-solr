@@ -7,8 +7,8 @@
     <version>0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>LinkedDataStore Memory persistence-provider</name>
-    <description>LinkedDataStore search provider for Lucene</description>
+    <name>LinkedDataStore Solr search-provider</name>
+    <description>LinkedDataStore Solr search-provider</description>
     <url>https://github.com/statisticsnorway/linked-data-store-search-provider-solr</url>
     <inceptionYear>2019</inceptionYear>
 
