@@ -91,6 +91,12 @@
             <artifactId>logback-classic</artifactId>
             <version>1.3.0-alpha4</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.mail</groupId>
+                    <artifactId>javax.mail</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
